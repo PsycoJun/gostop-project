@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Next.js 프론트엔드 서비스
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: gostop-client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/usr/src/app
+      # node_modules는 호스트와 동기화하지 않아 충돌 방지
+      - /usr/src/app/node_modules
+    restart: always
+
+  # NestJS 백엔드 서비스
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: gostop-server
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: always
