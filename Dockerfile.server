@@ -8,4 +8,4 @@ EXPOSE 3001
 # 이 부분은 실제 NestJS 프로젝트 구조에 따라 달라질 수 있음
 # CMD ["npm", "run", "start:dev"] 
 # 임시로 서버를 계속 실행 상태로 두기 위한 커맨드
-CMD ["tail", "-f", "/dev/null"]
+CMD ["npm", "run", "start:dev"]
