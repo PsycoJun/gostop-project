@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Next.js 프론트엔드 서비스
   client:
     build:
       context: .
@@ -11,11 +8,11 @@ services:
       - "3000:3000"
     volumes:
       - ./client:/usr/src/app
-      # node_modules는 호스트와 동기화하지 않아 충돌 방지
       - /usr/src/app/node_modules
     restart: always
+    networks:
+      - gostop-net
 
-  # NestJS 백엔드 서비스
   server:
     build:
       context: .
@@ -27,3 +24,22 @@ services:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     restart: always
+    depends_on:
+      - db
+    networks:
+      - gostop-net
+
+  db:
+    image: mongo:latest
+    container_name: gostop-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+    restart: always
+    networks:
+      - gostop-net
+
+networks:
+  gostop-net:
+    driver: bridge
