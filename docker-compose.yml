@@ -26,6 +26,7 @@ services:
       - gostop-net
     environment:
       - WDS_SOCKET_HOST=client
+    command: sh -c "npm install && npm run dev -- --hostname 0.0.0.0"
 
   server:
     build:
