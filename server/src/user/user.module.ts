@@ -10,7 +10,7 @@ import { UserService } from './user.service';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'your_jwt_secret',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '365d' },
     }),
   ],
   controllers: [UserController], // 👈 여기에 UserController가 등록되어 있는지 확인

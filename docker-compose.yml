@@ -1,25 +1,37 @@
 services:
+  nginx:
+    image: nginx:latest
+    container_name: gostop-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: always
+    depends_on:
+      - client
+      - server
+    networks:
+      - gostop-net
+
   client:
     build:
       context: .
       dockerfile: Dockerfile.client
     container_name: gostop-client
-    ports:
-      - "3000:3000"
     volumes:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules
     restart: always
     networks:
       - gostop-net
+    environment:
+      - WDS_SOCKET_HOST=client
 
   server:
     build:
       context: .
       dockerfile: Dockerfile.server
     container_name: gostop-server
-    ports:
-      - "3001:3001"
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
@@ -32,8 +44,6 @@ services:
   db:
     image: mongo:latest
     container_name: gostop-db
-    ports:
-      - "27017:27017"
     volumes:
       - ./mongo-data:/data/db
     restart: always
