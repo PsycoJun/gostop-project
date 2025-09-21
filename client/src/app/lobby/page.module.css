@@ -1,0 +1,196 @@
+/* client/src/app/lobby/page.module.css */
+
+.lobbyContainer {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f9fafb, #f3f4f6); /* from-gray-50 to-gray-100 */
+}
+
+.header {
+  background-color: rgba(255, 255, 255, 0.9); /* bg-white/90 */
+  border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.headerContent {
+  padding: 1rem; /* p-4 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* space-x-3 */
+}
+
+.logoIconContainer {
+  width: 3rem; /* w-12 */
+  height: 3rem; /* h-12 */
+  background-color: #3b82f6; /* bg-blue-500 */
+  border-radius: 0.5rem; /* rounded-lg */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+}
+
+.lobbyTitle {
+  font-size: 1.25rem; /* text-xl */
+  color: #111827; /* text-gray-900 */
+  font-weight: 600; /* font-semibold */
+}
+
+.welcomeText {
+  font-size: 0.875rem; /* text-sm */
+  color: #4b5563; /* text-gray-600 */
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space-x-2 */
+}
+
+.onlineUsersBadge {
+  background-color: #f3f4f6; /* bg-gray-100 */
+  color: #4b5563; /* text-gray-700 */
+  border: none; /* border-0 */
+  font-size: 0.75rem; /* text-xs */
+  display: flex; /* for Users icon */
+  align-items: center; /* for Users icon */
+  padding: 0.25rem 0.5rem; /* typical badge padding */
+  border-radius: 9999px; /* full rounded */
+}
+
+.onlineUsersIcon {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  margin-right: 0.25rem; /* mr-1 */
+}
+
+.logoutButton {
+  color: #4b5563; /* text-gray-600 */
+  background-color: transparent; /* variant="ghost" */
+  padding: 0.5rem; /* size="sm" */
+  border-radius: 9999px; /* rounded-full */
+  /* hover:bg-gray-200 */
+}
+.logoutButton:hover {
+  background-color: #e5e7eb;
+}
+
+.logoutIcon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+.mainContent {
+  padding: 1rem; /* p-4 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+}
+
+.createRoomButton {
+  width: 100%; /* w-full */
+  border-radius: 9999px; /* rounded-full */
+  height: 3.5rem; /* h-14 */
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #ffffff; /* text-white */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600; /* font-semibold */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* hover:bg-blue-700 */
+}
+.createRoomButton:hover {
+  background-color: #1d4ed8;
+}
+
+.createRoomIcon {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+  margin-right: 0.5rem; /* mr-2 */
+}
+
+.roomsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+.roomsTitle {
+  font-size: 1.125rem; /* text-lg */
+  color: #374151; /* text-gray-700 */
+  font-weight: 600; /* font-semibold */
+}
+
+.roomCard {
+  background-color: #ffffff; /* bg-white */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  border-radius: 0.5rem; /* rounded-lg */
+}
+
+.roomCardContent {
+  padding: 1rem; /* p-4 */
+}
+
+.roomCardInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roomInfo {
+  flex: 1; /* flex-1 */
+}
+
+.roomName {
+  font-weight: 500; /* font-medium */
+  font-size: 1rem; /* text-base */
+  color: #1f2937; /* text-gray-800 */
+}
+
+.playerCountContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space-x-2 */
+  margin-top: 0.25rem; /* mt-1 */
+}
+
+.playerCountBadge {
+  background-color: #dbeafe; /* bg-blue-100 */
+  color: #1e40af; /* text-blue-700 */
+  font-size: 0.75rem; /* text-xs */
+  display: flex; /* for Users icon */
+  align-items: center; /* for Users icon */
+  padding: 0.25rem 0.5rem; /* typical badge padding */
+  border-radius: 9999px; /* full rounded */
+}
+
+.playerCountIcon {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  margin-right: 0.25rem; /* mr-1 */
+}
+
+.joinButton {
+  border-radius: 9999px; /* rounded-full */
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #ffffff; /* text-white */
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+  /* hover:bg-blue-700 */
+  /* disabled:opacity-50 */
+}
+.joinButton:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+.joinButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

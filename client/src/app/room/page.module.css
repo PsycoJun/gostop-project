@@ -1,0 +1,396 @@
+/* client/src/app/room/page.module.css */
+
+.roomContainer {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fafaf9, #f5f5f4); /* Reverted to original */
+}
+
+.header {
+  background-color: rgba(255, 255, 255, 0.8); /* bg-white/80 */
+  backdrop-filter: blur(8px); /* backdrop-blur-md */
+  border-bottom: 1px solid rgba(231, 229, 228, 0.5); /* border-stone-200/50 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.headerContent {
+  padding: 3vw; /* p-[3vw] */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 2vw; /* space-x-[2vw] */
+}
+
+.backButton {
+  color: #57534e; /* text-stone-700 */
+  background-color: transparent; /* variant="ghost" */
+  border-radius: 0.75rem; /* rounded-xl */
+  /* hover:bg-stone-200/50 */
+}
+.backButton:hover {
+  background-color: rgba(231, 229, 228, 0.5);
+}
+
+.backIcon {
+  width: 1rem; /* w-4 */
+  height: 1rem; /* h-4 */
+}
+
+.roomTitle {
+  color: #1c1917; /* text-stone-900 */
+  font-weight: 500; /* font-medium */
+  font-size: clamp(16px, 4vw, 20px); /* text-[clamp(16px,4vw,20px)] */
+}
+
+.roomStatus {
+  color: #57534e; /* text-stone-600 */
+  font-size: clamp(12px, 3vw, 14px); /* text-[clamp(12px,3vw,14px)] */
+}
+
+.playerCountBadge {
+  background-color: #e7e5e4; /* bg-stone-200 */
+  color: #292524; /* text-stone-800 */
+  border: none; /* border-0 */
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem; /* typical badge padding */
+  border-radius: 9999px; /* full rounded */
+}
+
+.playerCountIcon {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  margin-right: 0.25rem; /* mr-1 */
+}
+
+.mainContent {
+  padding: 3vw; /* p-[3vw] */
+  display: flex;
+  flex-direction: column;
+  gap: 3vw; /* space-y-[3vw] */
+}
+
+.playersCard {
+  background-color: rgba(255, 255, 255, 0.95); /* bg-white/95 */
+  backdrop-filter: blur(4px); /* backdrop-blur-sm */
+  border: none; /* border-0 */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+}
+
+.playersCardContent {
+  padding: 3vw; /* p-[3vw] */
+}
+
+.playersTitle {
+  font-weight: 500; /* font-medium */
+  margin-bottom: 2vw; /* mb-[2vw] */
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: 2vw; /* space-y-[2vw] */
+}
+
+.playerItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.playerInfo {
+  display: flex;
+  align-items: center;
+  gap: 2vw; /* space-x-[2vw] */
+}
+
+.avatar {
+  width: 2.5rem; /* w-10 */
+  height: 2.5rem; /* h-10 */
+}
+
+.avatarFallback {
+  background-color: #6b7280; /* stone-700 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.playerName {
+  font-weight: 500;
+}
+
+.buttonsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2vw; /* space-y-[2vw] */
+}
+
+.goToBoardButton {
+  width: 100%; /* w-full */
+  border-radius: 1rem; /* rounded-2xl */
+  height: clamp(48px, 12vw, 72px); /* h-[clamp(48px,12vw,72px)] */
+  background-color: #44403c; /* bg-stone-800 */
+  color: #ffffff; /* text-white */
+}
+
+.startGameButton {
+  width: 100%;
+  height: clamp(48px, 12vw, 72px);
+  color: #ffffff;
+  background-color: #0064FF; /* Toss Blue for enabled state */
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.startGameButton:disabled {
+  background-color: #292524; /* Muted black for disabled state */
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.startGameIcon {
+  width: 1.25rem; /* w-5 */
+  height: 1.25rem; /* h-5 */
+  margin-right: 0.5rem; /* mr-2 */
+}
+
+/* Game Board Styling */
+.gameBoardContainer {
+  min-height: 100vh;
+  display: grid; /* Use CSS Grid for precise layout */
+  grid-template-columns: 1fr 2fr 1fr; /* Left player, center board, right player */
+  grid-template-rows: 1fr 2fr 1fr; /* Top player, middle board, bottom player */
+  gap: 1rem; /* Gap between grid items */
+  padding: 1rem;
+  background-color: #556B2F; /* Dark Olive Green - Army Blanket base */
+  color: #fff;
+  font-family: 'Arial', sans-serif; /* Toss-like feel */
+  position: relative;
+  overflow: hidden; /* Ensure content doesn't spill */
+}
+
+.playerAreaTop {
+  grid-column: 2 / 3; /* Center column */
+  grid-row: 1 / 2; /* Top row */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.playerAreaLeft {
+  grid-column: 1 / 2; /* Left column */
+  grid-row: 2 / 3; /* Middle row */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.playerAreaRight {
+  grid-column: 3 / 4; /* Right column */
+  grid-row: 2 / 3; /* Middle row */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.playerAreaBottom {
+  grid-column: 1 / 4; /* Span all columns */
+  grid-row: 3 / 4; /* Bottom row */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.mainGameArea {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  display: flex;
+  flex-direction: column; /* Floor and hand stacked */
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.centerBoardArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.floorCardsArea {
+  width: 100%;
+  height: 150px;
+  background-color: rgba(107, 142, 35, 0.7); /* Olive Drab - slightly transparent */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #455a2b; /* Darker olive */
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.handCardsArea {
+  width: 100%;
+  height: 100px;
+  background-color: rgba(139, 134, 128, 0.7); /* Grullo - slightly transparent */
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #6d6a66; /* Darker grullo */
+}
+
+.cardPlaceholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+}
+
+/* Player Areas */
+.playerAreaTop, .playerAreaBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 200px;
+}
+
+.playerAreaLeft, .playerAreaRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  height: 100%;
+  max-height: 200px;
+}
+
+.playerInfoTop, .playerInfoBottom, .playerInfoSide {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.playerAvatar {
+  width: 40px;
+  height: 40px;
+}
+
+.playerAvatarFallback {
+  background-color: #6b7280; /* stone-700 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.playerName {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.playerScoreBoard {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  min-width: 100px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.scoreItem {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.currentScore {
+  font-weight: bold;
+  color: #FFD700;
+  margin-top: 0.5rem;
+}
+
+.budget {
+  font-size: 0.9rem;
+  color: #90EE90;
+}
+
+.readyButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.readyButton:hover {
+  background-color: #45a049;
+}
+
+.exitButton {
+  background-color: #f44336;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.exitButton:hover:not(:disabled) {
+  background-color: #da190b;
+}
+
+.exitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.readyCheckmark {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+  color: #90EE90;
+}
+
+.hostCrown {
+  margin-left: 0.5rem;
+  font-size: 1.2rem;
+  color: gold;
+}
