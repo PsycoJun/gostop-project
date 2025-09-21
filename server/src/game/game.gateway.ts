@@ -53,7 +53,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   >();
   private roomsMetadata = new Map<
     string,
-    { hostId: string; playerIds: Set<string> }
+    { hostId: string; playerIds: Set<string>; gameStarted: boolean; readyPlayers: Set<string> }
   >();
 
   // NestJS의 의존성 주입(DI) 시스템을 통해 GameService 인스턴스를 주입받음
@@ -140,6 +140,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.roomsMetadata.set(roomId, {
       hostId: userId,
       playerIds: new Set([userId]),
+      gameStarted: false,
+      readyPlayers: new Set(),
     });
     const player = this.connectedPlayers.get(userId);
     if (player) {
@@ -184,6 +186,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.broadcastRoomInfo(roomId);
   }
 
+  @SubscribeMessage("readyGame")
+  handleReadyGame(@ConnectedSocket() socket: AuthenticatedSocket) {
+    const { userId } = socket;
+    const playerInfo = this.connectedPlayers.get(userId);
+    if (!playerInfo?.roomId) return;
+
+    const { roomId } = playerInfo;
+    const room = this.roomsMetadata.get(roomId);
+    if (!room) return;
+
+    // Add player to readyPlayers set
+    room.readyPlayers.add(userId);
+    console.log(`[Gateway] Player ${socket.username} is ready in room ${roomId}. Ready players: ${Array.from(room.readyPlayers).join(', ')}`);
+
+    // Broadcast updated room info to reflect ready status
+    this.broadcastRoomInfo(roomId);
+  }
+
   @SubscribeMessage("leaveRoom")
   handleLeaveRoom(@ConnectedSocket() socket: AuthenticatedSocket) {
     const { userId } = socket;
@@ -198,11 +218,18 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     room.playerIds.delete(userId);
     playerInfo.roomId = undefined;
 
-    // 방이 비었으면 방 삭제
+    // 방이 비었으면 5초 후 삭제되도록 유예 시간을 둠
     if (room.playerIds.size === 0) {
-      this.roomsMetadata.delete(roomId);
-      this.gameService.deleteRoom(roomId);
-      console.log(`🗑️ [방 삭제] ${roomId} 방이 비어서 삭제되었습니다.`);
+      console.log(`[방 비어있음] ${roomId} 방이 비어있습니다. 5초 후 삭제됩니다.`);
+      setTimeout(() => {
+        const currentRoom = this.roomsMetadata.get(roomId);
+        if (currentRoom && currentRoom.playerIds.size === 0) {
+          this.roomsMetadata.delete(roomId);
+          this.gameService.deleteRoom(roomId);
+          console.log(`🗑️ [방 삭제] ${roomId} 방이 비어서 삭제되었습니다.`);
+          this.broadcastLobbyInfo(); // 방 삭제 후 로비 정보 갱신
+        }
+      }, 5000); // 5초 유예
     } else {
       // 호스트가 나갔으면 새로운 호스트 지정
       if (room.hostId === userId) {
@@ -224,14 +251,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage("startGame")
   async handleStartGame(@ConnectedSocket() socket: AuthenticatedSocket) {
+    console.log(`[Gateway] Received startGame event from ${socket.username} for room ${this.connectedPlayers.get(socket.userId)?.roomId}`);
     const { userId } = socket;
     const roomId = this.connectedPlayers.get(userId)?.roomId;
     const room = this.roomsMetadata.get(roomId!);
 
     if (!roomId || !room || room.hostId !== userId) {
+      console.log(`[Gateway] startGame error: Invalid room or not host. RoomId: ${roomId}, Host: ${room?.hostId}, User: ${userId}`);
       return socket.emit("gameError", "호스트만 게임을 시작할 수 있습니다.");
     }
     if (room.playerIds.size < 2) {
+      console.log(`[Gateway] startGame error: Not enough players. RoomId: ${roomId}, Players: ${room.playerIds.size}`);
       return socket.emit(
         "gameError",
         "최소 2명 이상이어야 시작할 수 있습니다.",
@@ -239,12 +269,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     try {
+      console.log(`[Gateway] Calling gameService.createRoom for roomId: ${roomId}`);
       const playerIds = Array.from(room.playerIds);
-      await this.gameService.createRoom(roomId, playerIds); // DB에서 유저 정보 가져와 게임 생성
+      await this.gameService.createRoom(roomId, playerIds);
 
+      console.log(`[Gateway] Calling gameService.startGame for roomId: ${roomId}`);
       const result: StartGameResult = this.gameService.startGame(roomId);
 
-      console.log(`🚀 [게임 시작] ${roomId} 방에서 게임을 시작합니다.`);
+      // Update room metadata to reflect game started
+      const currentRoom = this.roomsMetadata.get(roomId);
+      if (currentRoom) {
+        currentRoom.gameStarted = true;
+        this.roomsMetadata.set(roomId, currentRoom);
+      }
+
+      console.log(`🚀 [게임 시작] ${roomId} 방에서 게임을 시작합니다. Emitting gameStarted.`);
       this.server.to(roomId).emit("gameStarted");
       this.broadcastGameState(roomId);
 
@@ -252,6 +291,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.promptPlayer(result.nextPlayerId, "promptParticipation");
       }
     } catch (error: unknown) {
+      console.error(`[Gateway] Error during startGame for roomId ${roomId}:`, error);
       if (isError(error)) {
         socket.emit("gameError", error.message);
       } else {
@@ -296,6 +336,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         id,
         username: this.connectedPlayers.get(id)?.username,
       })),
+      gameStarted: room.gameStarted,
+      readyPlayers: Array.from(room.readyPlayers),
     };
     this.server.to(roomId).emit("roomInfoUpdate", roomInfo);
   }

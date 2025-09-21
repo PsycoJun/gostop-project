@@ -13,14 +13,16 @@ export class GameService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async createRoom(roomId: string, playerIds: string[]) {
-    // DB에서 플레이어들의 최신 정보를 가져옴
+    console.log(`[GameService] createRoom called for roomId: ${roomId}, playerIds: ${playerIds}`);
     const playersData = await this.getPlayersData(playerIds);
 
     if (this.rooms.has(roomId)) {
+      console.warn(`[GameService] createRoom warning: Game instance for room ${roomId} already exists.`);
       throw new Error("Room already exists.");
     }
     const game = new GoStopCore(playersData);
     this.rooms.set(roomId, game);
+    console.log(`[GameService] Game instance created and stored for roomId: ${roomId}`);
     return game;
   }
   deleteRoom(roomId: string): void {
@@ -58,17 +60,20 @@ export class GameService {
   }
 
   startGame(roomId: string): { nextPlayerId: string | null } {
+    console.log(`[GameService] startGame called for roomId: ${roomId}`);
     // Placeholder implementation
     const game = this.rooms.get(roomId);
-    if (!game) throw new Error("Game not found");
+    if (!game) {
+      console.error(`[GameService] startGame error: Game instance for room ${roomId} not found.`);
+      throw new Error("Game not found");
+    }
 
     const result = game.setupRound();
+    console.log(`[GameService] Game setupRound completed for roomId: ${roomId}`);
     return { nextPlayerId: result.promptPlayerId };
   }
 
   getGame(roomId: string): GoStopCore | undefined {
     return this.rooms.get(roomId);
   }
-
-  // ... (getGame, deleteRoom, startGame, playCard 등 나머지 메소드들은 동일) ...
 }
